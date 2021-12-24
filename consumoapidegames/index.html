@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumo API</title>
+</head>
+<body>
+
+    <h4>Login</h4>
+        <input type="text" placeholder="nome" id="login"><br>
+        <input type="text" placeholder="senha" id="senha">
+        <button onclick="login();">Entrar</button>
+    <h4>Lista de games</h4>
+
+    <ul id="games"></ul>
+
+    <hr>
+    <h4>Novo game</h4>
+    <form action="">
+        <input type="text" name="title" placeholder="Title" id="title"><br>
+        <input type="text" name="year" placeholder="year" id="year"><br>
+        <input type="number" name="price" placeholder="price" id="price"><br>
+        <button type="button" class="btn btn-primary" onclick="createGame();">Enviar</button>
+    </form>
+
+    <hr>
+    <h4>Editar</h4>
+    <form action="">
+        <input type="text" name="id" readonly placeholder="Id" id="idEdit"><br>
+        <input type="text" name="title" placeholder="Title" id="titleEdit"><br>
+        <input type="text" name="year" placeholder="year" id="yearEdit"Edit><br>
+        <input type="number" name="price" placeholder="price" id="priceEdit"><br>
+        <button type="button" class="btn btn-primary" onclick="updateGame();">Editar</button>
+    </form>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        var axiosConfig = {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem('token')
+            }
+        };
+
+        function login(){
+            var email = document.getElementById("login");
+            var senha = document.getElementById("senha");
+            var email = email.value;
+            var senha = senha.value;
+
+            axios.post('http://localhost:4567/auth', {
+                email,
+                senha
+            }).then(response => {
+                token = response.data.token;
+                localStorage.setItem('token', token);
+                axiosConfig.headers.Authorization = "Bearer " + token
+                
+                
+            }).catch(err => {
+                alert('Invalido');
+            })
+        }
+
+        
+        function updateGame() {
+            var titleInput = document.getElementById('titleEdit');
+            var yearInput = document.getElementById('yearEdit');
+            var priceInput = document.getElementById('priceEdit');
+            var idInput = document.getElementById('idEdit');
+
+            var game = {
+                title:titleInput.value,
+                year:yearInput.value,
+                price:priceInput.value,
+            }
+            
+            axios.put('http://localhost:4567/game/'+idInput.value, game, axiosConfig).then(response => {
+
+                if (response.status == 200) {
+                    alert('OK');
+                    
+                } else {
+                    alert('Problem');
+                }
+            }).catch(err => {
+                console.log(err);
+            })
+        }
+        function deleteGame(listItem) {
+            id = listItem.getAttribute('data-id');
+            axios.delete('http:localhost:4567/game/'+id, axiosConfig).then(response => {
+                alert('deletado');
+            }).catch(err => {
+                console.log(err);
+            })
+        }
+
+        function loadForm(listItem) {
+            var id =listItem.getAttribute('data-id');
+            var title =listItem.getAttribute('data-title');
+            var year =listItem.getAttribute('data-year');
+            var price =listItem.getAttribute('data-price');
+
+            var idField = document.getElementById('idEdit');
+            idField.value = id;
+
+            var titleField = document.getElementById('titleEdit');
+            titleField.value = title;
+
+            var priceField = document.getElementById('priceEdit');
+            priceField.value = price;
+
+            var yearField = document.getElementById('yearEdit');
+            yearField.value = year;
+
+        }
+
+        axios.get('http://localhost:4567/games', axiosConfig).then(response => {
+            var games = response.data;
+            var list = document.getElementById('games');
+
+            games.forEach(game => {
+                var item = document.createElement('li');
+                item.innerHTML = game.id + ' - ' + game.title + ' - R$' + game.price;
+                item.setAttribute('data-id', game.id);
+                item.setAttribute('data-title', game.title);
+                item.setAttribute('data-year', game.year);
+                item.setAttribute('data-price', game.price);
+                
+                var deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = "Deletar";
+                deleteBtn.addEventListener("click",function() {deleteGame(item)});
+
+                var editBtn = document.createElement('button');
+                editBtn.innerHTML = 'Editar';
+                editBtn.addEventListener('click', function(){ loadForm(item)});
+
+                item.appendChild(deleteBtn);
+                item.appendChild(editBtn);
+
+
+                list.appendChild(item);
+                
+            })
+        }).catch(error => {
+            console.log(error);
+        });
+
+        function createGame() {
+            var titleInput = document.getElementById('title');
+            var yearInput = document.getElementById('year');
+            var priceInput = document.getElementById('price');
+
+            var game = {
+                title:titleInput.value,
+                year:yearInput.value,
+                price:priceInput.value,
+            }
+            
+            axios.post('http://localhost:4567/game', game, axiosConfig).then(response => {
+
+                if (response.status == 200) {
+                    alert('OK');
+                    
+                } else {
+                    alert('Problem');
+                }
+            }).catch(err => {
+                console.log(err);
+            })
+
+        }
+    </script>
+</body>
+</html>

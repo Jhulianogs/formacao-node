@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+<body>
+    <%- include('partials/homenavbar') %> 
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-3">Bem-vindo</h1>
+            <p class="lead">Jumbo helper text</p>
+            <hr class="my-2">
+            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Error obcaecati praesentium a libero doloremque quo veritatis suscipit tempore eveniet? Fugiat molestiae dolore labore aut sit fugit quod numquam voluptatem! Laboriosam.</p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="Jumbo action link" role="button">Jumbo action name</a>
+            </p>
+        </div>
+        <% articles.forEach(article => { %> 
+            <div class="card">
+                <div class="card-header">
+                    <h2 class=""><%= article.title %></h2>
+                </div>
+                <div class="card-body">
+                    <a href="/<%= article.slug %>" class="btn btn-success">Ler artigo</a>
+                </div>
+            </div>
+            <br>
+        <% }) %>
+        <div class="row">
+            <hr>
+            <div class="col-12">
+                <a href="/articles/page/2" class="float-right">Next</a>
+            </div>
+        </div>
+    </div>
+</body>
+<%- include('partials/footer') %>

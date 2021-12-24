@@ -1,0 +1,25 @@
+<%- include('../../partials/header') %>
+<body>
+    <%- include('../../partials/navbar') %>
+    <div class="container">
+        <div class="card mt-2">
+            <div class="card-header">
+                <h2>Criacao de usuário</h2>
+            </div>
+            <div class="card-body">
+                <form action="/users/create" method="post">
+                    <div class="form-group">
+                      <label for="">Email</label>
+                      <input type="text" class="form-control" name="email" id="" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Senha</label>
+                        <input type="password" class="form-control" name="password" id="" placeholder="">
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block">Criar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<%- include('../../partials/footer') %>

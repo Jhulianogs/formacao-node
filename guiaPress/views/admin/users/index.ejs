@@ -1,0 +1,47 @@
+<%- include('../../partials/header') %>
+<body>
+    <%- include('../../partials/navbar') %>
+    <div class="container">
+        <hr>
+        <h2>Usuários</h2>
+        <a href="/admin/users/create" class="btn btn-success">Criar novo usuário</a>
+        <hr>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                <tr>
+                    <td><%= user.id %></td>
+                    <td><%= user.email %></td>
+                    <td>
+                        <a href="/admin/users/edit/<%= user.id %> " class="btn btn-warning">Editar</a>
+                        <form action="/users/delete" method="post" class="d-inline" onsubmit="confirmarDelecao(event, this)">
+                            <input type="hidden" name="id" value="<%= user.id %>">
+                            <button type="submit" class="btn btn-danger" >Deletar</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %> 
+            </tbody>
+        </table>
+
+    </div>
+</body>
+<%- include('../../partials/footer') %>
+
+<script>
+    function confirmarDelecao(ev, form) {
+        ev.preventDefault();
+        var decision = confirm("Tem certeza?");
+        if (decision) {
+            form.submit();
+        }
+
+    }
+</script>
