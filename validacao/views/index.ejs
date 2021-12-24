@@ -7,13 +7,16 @@
     <title>Validação</title>
 </head>
 <body>
+    <div class="message">
+        <p><%= message %> </p>
+    </div>
     <form action="/form" method="post">
         <input type="text" name="email" id="email" placeholder="E-mail" value="<%= email %>" required><br>
-        <span class="alert"><%= emailError %></span><br>
+        <!-- <span class="alert"><%= emailError %></span><br> -->
         <input type="text" name="nome" id="nome" placeholder="Nome" value="<%= nome %>" ><br>
-        <span class="alert"><%= nomeError %></span><br>
+        <!-- <span class="alert"><%= nomeError %></span><br> -->
         <input type="number" name="pontos" id="pontos" placeholder="Pontos" value="<%= pontos %>" ><br>
-        <span class="alert"><%= pontosError %></span><br>
+        <!-- <span class="alert"><%= pontosError %></span><br> -->
         <button type="submit">Enviar</button>
     </form>
 </body>

@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var flash = require('express-flash');
 var cookieParser = require('cookie-parser');
+var validator = require('validator');
 
 var app = express();
 app.set('view engine', 'ejs');
@@ -27,44 +28,58 @@ app.get('/', (req, res) => {
     var email = req.flash('email') || "";
     var pontos = req.flash('pontos') || '';
     var nome = req.flash('nome') || '';
-
+    var message = req.flash('message');
     emailError = (emailError == undefined || emailError.length == 0 ) ? undefined: emailError;
-    res.render('index', {emailError, nomeError, pontosError, email, nome, pontos});
+    res.render('index', {emailError, nomeError, pontosError, email, nome, pontos, message});
 })
 
 
 app.post('/form', (req, res) => {
     var { email, nome, pontos}  = req.body;
 
-    var emailError;
-    var pontosError;
-    var nomeError;
+    // var emailError;
+    // var pontosError;
+    // var nomeError;
 
-    if (email == undefined || email == "") {
-        emailError = "Você não pode cadastrar sem email";
-    }
-    if (pontos == undefined || pontos < 20) {
-        pontosError = "Você tem de ter ao menos 20 pontos";
-    }
+    // if (email == undefined || email == "") {
+    //     emailError = "Você não pode cadastrar sem email";
+    // }
+    // if (pontos == undefined || pontos < 20) {
+    //     pontosError = "Você tem de ter ao menos 20 pontos";
+    // }
      
-    if (nome == undefined || nome == "") {
-        nomeError = "Digite seu nome";
-    }
-
-    if (emailError != undefined || pontosError != undefined || nomeError != undefined) {
-        // res.send("Contem erros");
-        req.flash('emailError', emailError);
-        req.flash('pontosError', pontosError);
-        req.flash('nomeError', nomeError);
-
-        req.flash('email', email);
-        req.flash('pontos', pontos);
-        req.flash('nome', nome);
-
+    // if (nome == undefined || nome == "") {
+    //     nomeError = "Digite seu nome";
+    // }
+    if(!validator.isEmail(email)) {
+        req.flash('message', "Digite um e-mail válido");
         res.redirect('/');
-    } else {
-        res.send("Ok. Valido");
     }
+
+    if (validator.isEmpty(req.body.nome)) {
+        req.flash('message', "Digite um nome");
+        res.redirect('/');
+    }
+    if (!validator.isByteLength(req.body.nome, {min: 5})) {
+        req.flash('message', "Digite um nome maior que 5 caracteres");
+        res.redirect('/');
+    }
+    
+    res.send('OK, enviado');
+    // if (emailError != undefined || pontosError != undefined || nomeError != undefined) {
+    //     // res.send("Contem erros");
+    //     req.flash('emailError', emailError);
+    //     req.flash('pontosError', pontosError);
+    //     req.flash('nomeError', nomeError);
+
+    //     req.flash('email', email);
+    //     req.flash('pontos', pontos);
+    //     req.flash('nome', nome);
+
+    //     res.redirect('/');
+    // } else {
+    //     res.send("Ok. Valido");
+    // }
 })
 
 app.listen('4567', (req, res) => {
